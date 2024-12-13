@@ -25,7 +25,7 @@ export class RegistrationFormComponent {
   profileForm = new FormGroup({
     email: new FormControl(''),
     login: new FormControl(''),
-    birthDate: new FormControl(''),
+    birthDay: new FormControl(''),
     password: new FormControl(''),
     confirmPassword: new FormControl('')
   });
