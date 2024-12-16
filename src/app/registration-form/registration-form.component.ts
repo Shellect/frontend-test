@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { catchError, throwError } from 'rxjs';
+import { RegistrationResponse } from '../definitions';
 
 @Component({
   selector: 'app-registration-form',
@@ -37,12 +38,14 @@ export class RegistrationFormComponent {
     return throwError(() => response.error);
   }
 
+  private setSession(res: RegistrationResponse) {
+    localStorage.setItem('id_token', res.token);
+  }
+
   onSubmit() {
     this.http
-      .post(environment.API_URL + "/account/registration", this.profileForm.value)
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(data => console.log(data))
+      .post<RegistrationResponse>(environment.API_URL + "/account/registration", this.profileForm.value)
+      .pipe(catchError(this.handleError.bind(this)))
+      .subscribe(res => this.setSession(res));
   }
 }
