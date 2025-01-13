@@ -1,33 +1,26 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { throwError, catchError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { catchError, throwError } from 'rxjs';
 import { RegistrationResponse } from '../definitions';
 
 @Component({
-  selector: 'app-registration-form',
+  selector: 'app-login-form',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './registration-form.component.html'
+  templateUrl: './login-form.component.html'
 })
-export class RegistrationFormComponent {
+export class LoginFormComponent {
 
   constructor(private http: HttpClient) { }
   public errors = {
-    Email: [],
-    Login: [],
-    BirthDay: [],
-    Password: []
+    Email: []
   }
-
 
   profileForm = new FormGroup({
     email: new FormControl(''),
-    login: new FormControl(''),
-    birthDay: new FormControl(''),
-    password: new FormControl(''),
-    confirmPassword: new FormControl('')
+    password: new FormControl('')
   });
 
   private handleError(response: HttpErrorResponse) {
@@ -43,7 +36,7 @@ export class RegistrationFormComponent {
 
   onSubmit() {
     this.http
-      .post<RegistrationResponse>(environment.API_URL + "/account/registration", this.profileForm.value)
+      .post<RegistrationResponse>(environment.API_URL + "/account/login", this.profileForm.value)
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(res => this.setSession(res));
   }
