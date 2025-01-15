@@ -36,7 +36,7 @@ export class LoginFormComponent {
 
   onSubmit() {
     this.http
-      .post<RegistrationResponse>(environment.API_URL + "/account/login", this.profileForm.value)
+      .post<RegistrationResponse>(environment.API_URL + "/account/login", this.profileForm.value, {withCredentials: true})
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(res => this.setSession(res));
   }
