@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { throwError, catchError } from 'rxjs';
+import { throwError, catchError, EMPTY } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { RegistrationResponse } from '../definitions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
@@ -13,7 +14,7 @@ import { RegistrationResponse } from '../definitions';
 })
 export class LoginFormComponent {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
   public errors = {
     Email: []
   }
@@ -26,6 +27,7 @@ export class LoginFormComponent {
   private handleError(response: HttpErrorResponse) {
     if (response.status === 400) {
       this.errors = response.error.errors;
+      return EMPTY;
     }
     return throwError(() => response.error);
   }
@@ -38,6 +40,9 @@ export class LoginFormComponent {
     this.http
       .post<RegistrationResponse>(environment.API_URL + "/account/login", this.profileForm.value, {withCredentials: true})
       .pipe(catchError(this.handleError.bind(this)))
-      .subscribe(res => this.setSession(res));
+      .subscribe(res => {
+        this.setSession(res);
+        this.router.navigate(['']);
+      });
   }
 }

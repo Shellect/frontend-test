@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { catchError, throwError } from 'rxjs';
 import { RegistrationResponse } from '../definitions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-form',
@@ -13,7 +14,7 @@ import { RegistrationResponse } from '../definitions';
 })
 export class RegistrationFormComponent {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
   public errors = {
     Email: [],
     Login: [],
@@ -45,6 +46,9 @@ export class RegistrationFormComponent {
     this.http
       .post<RegistrationResponse>(environment.API_URL + "/account/registration", this.profileForm.value)
       .pipe(catchError(this.handleError.bind(this)))
-      .subscribe(res => this.setSession(res));
+      .subscribe(res => {
+        this.setSession(res);
+        this.router.navigate([""]);
+      });
   }
 }
